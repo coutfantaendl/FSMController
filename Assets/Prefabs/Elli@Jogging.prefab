@@ -2122,6 +2122,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _config: {fileID: 11400000, guid: 01df7513af8a8a84eb50af3eccbb698a, type: 2}
+  _jumpForce: 1
+  _rorateSpeed: 3.5
 --- !u!114 &3579146568159987781
 MonoBehaviour:
   m_ObjectHideFlags: 0

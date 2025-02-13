@@ -7,7 +7,8 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private PlayerConfig _config;
-    [SerializeField] private float _jumpForce ;
+    [SerializeField] private float _jumpForce;
+    [SerializeField] private float _rorateSpeed;
     
     private CharacterController _controller;
     private InputHandler _inputHandler;
@@ -33,7 +34,18 @@ public class PlayerMovement : MonoBehaviour
         var input = _inputHandler.GetMovementInput();
         var move = transform.right * input.x + transform.forward * input.z;
         
+        if (move.magnitude > 0.1f) 
+        {
+            RotateTowards(move);
+        }
+        
         _controller.Move(move * (speed * Time.deltaTime));
+    }
+    
+    private void RotateTowards(Vector3 direction)
+    {
+        Quaternion targetRotation = Quaternion.LookRotation(direction);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * _rorateSpeed);
     }
     
     public void Jump()
