@@ -3,26 +3,31 @@ using UnityEngine;
 
 namespace FSM.States
 {
-    public class IdlingState : State
+    public class IdlingState : IState
     {
-        public IdlingState(CharacterController character, PlayerStateMachine stateMachine, Animator animator)
-            : base(character, stateMachine, animator)
+        private readonly PlayerMovement _movement;
+        private readonly IStateSwitcher _stateSwitcher;
+
+        public IdlingState(PlayerMovement movement, IStateSwitcher stateSwitcher)
         {
+            _movement = movement;
+            _stateSwitcher = stateSwitcher;
         }
         
-        public override void Enter()
+        public void Enter()
         {
-            throw new System.NotImplementedException();
+           
         }
 
-        public override void Update()
+        public void Update()
         {
-            throw new System.NotImplementedException();
+            
         }
 
-        public override void Exit()
+        public void Exit()
         {
-            throw new System.NotImplementedException();
+            
         }
+        
     }
 }

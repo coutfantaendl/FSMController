@@ -3,28 +3,21 @@ using UnityEngine;
 
 namespace FSM.States
 {
-    public class JumpingState : State
+    public class JumpingState : IState
     {
-        public JumpingState(CharacterController character, PlayerStateMachine stateMachine, Animator animator) 
-            : base(character, stateMachine, animator)
+        public void Enter()
         {
+            
         }
 
-        public override void Enter()
+        public void Update()
         {
-            throw new System.NotImplementedException();
+            
         }
 
-        public override void Update()
+        public void Exit()
         {
-            throw new System.NotImplementedException();
+            
         }
-
-        public override void Exit()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        
     }
 }

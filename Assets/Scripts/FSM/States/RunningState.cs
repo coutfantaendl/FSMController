@@ -3,28 +3,32 @@ using UnityEngine;
 
 namespace FSM.States
 {
-    public class RunningState : State
+    public class RunningState : IState
     {
-        public RunningState(CharacterController character, PlayerStateMachine stateMachine, Animator animator) 
-            : base(character, stateMachine, animator)
+        private readonly float _speed;
+        private readonly PlayerMovement _movement;
+        private readonly IStateSwitcher _stateSwitcher;
+
+        public RunningState(float speed, PlayerMovement movement, IStateSwitcher stateSwitcher)
         {
+            _speed = speed;
+            _movement = movement;
+            _stateSwitcher = stateSwitcher;
         }
 
-        public override void Enter()
+        public void Enter()
         {
-            throw new System.NotImplementedException();
+            
         }
 
-        public override void Update()
+        public void Update()
         {
-            throw new System.NotImplementedException();
+            _movement.Move(_speed);
         }
 
-        public override void Exit()
+        public void Exit()
         {
-            throw new System.NotImplementedException();
+            
         }
-
-        
     }
 }
