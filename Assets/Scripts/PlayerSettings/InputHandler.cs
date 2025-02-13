@@ -1,7 +1,5 @@
-using System;
 using PlayerSettings.Abstraction;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace PlayerSettings
 {
@@ -26,7 +24,13 @@ namespace PlayerSettings
 
         public Vector3 GetMovementInput()
         {
-            throw new NotImplementedException();
+            var input = _inputSystemActions.Player.Move.ReadValue<Vector2>();
+            return new Vector3(input.x, 0, input.y);
+        }
+        
+        public bool IsJumpPressed()
+        {
+            return _inputSystemActions.Player.Jump.WasPressedThisFrame();
         }
     }
 }

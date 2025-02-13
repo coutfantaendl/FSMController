@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using FSM.Abstractions;
 using FSM.States;
+using PlayerSettings;
 using PlayerSettings.PlayerConfigs;
 
 namespace FSM
@@ -12,12 +13,13 @@ namespace FSM
         private readonly List<IState> _states;
         private IState _currentState;
 
-        public StateMachine(PlayerConfig config, PlayerMovement movement)
+        public StateMachine(PlayerConfig config, PlayerMovement movement, PlayerView view)
         {
             _states = new List<IState>
             {
-                new IdlingState(movement, this),
-                new RunningState(config.MovementSpeed, movement, this)
+                new IdlingState(movement, this, view),
+                new RunningState(config.MovementSpeed, movement, this, view),
+                new JumpingState(movement,this,view)
             };
 
             _currentState = _states[0];
@@ -36,6 +38,7 @@ namespace FSM
 
             if (_currentState is null)
                 throw new ArgumentNullException($"State of type {typeof(TState).Name} not found");
+            
             _currentState.Enter();
         }
     }

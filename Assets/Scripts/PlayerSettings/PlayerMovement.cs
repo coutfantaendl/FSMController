@@ -1,60 +1,86 @@
+using FSM;
+using PlayerSettings;
+using PlayerSettings.PlayerConfigs;
 using UnityEngine;
 
+[RequireComponent(typeof(CharacterController))]
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField] private float moveSpeed = 5f;
-    [SerializeField] private float jumpHeight = 2f;
-    [SerializeField] private float gravity = -9.81f;
-    [SerializeField] private Transform cameraTransform;
-
+    [SerializeField] private PlayerConfig _config;
+    [SerializeField] private float _jumpForce ;
+    
     private CharacterController _controller;
+    private InputHandler _inputHandler;
+    private StateMachine _stateMachine;
+    private PlayerView _view;
+    
+    private float _gravity = 9.81f;
+    
     private Vector3 _velocity;
     private bool _isGrounded;
 
     private void Awake()
     {
         _controller = GetComponent<CharacterController>();
-    }
+        _inputHandler = GetComponent<InputHandler>();
+        _view = GetComponent<PlayerView>();
 
-    private void Update()
-    {
-        _isGrounded = _controller.isGrounded;
+        _stateMachine = new StateMachine(_config,this, _view);
     }
 
     public void Move(float speed)
     {
+        var input = _inputHandler.GetMovementInput();
+        var move = transform.right * input.x + transform.forward * input.z;
         
+        _controller.Move(move * (speed * Time.deltaTime));
     }
-
-    public void SetMovement()
-    {
-        
-    }
-
-    public void HasMovementInput()
-    {
-        
-    }
-
+    
     public void Jump()
     {
-        if (_isGrounded)
+        if (IsGrounded())
         {
-            _velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+            _velocity.y = Mathf.Sqrt(_jumpForce * 2f * _gravity);
         }
     }
 
-    public void ApplyGravity()
+    private void Update()
     {
-        if (!_isGrounded)
+        ApplyGravity();
+        CheckGround();
+        
+        _stateMachine.Update();
+    }
+    
+    private void ApplyGravity()
+    {
+        if (IsGrounded() && _velocity.y < 0)
         {
-            _velocity.y += gravity * Time.deltaTime;
+            _velocity.y = -2f; 
         }
-        else if (_velocity.y < 0)
-        {
-            _velocity.y = -2f;
-        }
-
+        _velocity.y -= _gravity * Time.deltaTime; 
         _controller.Move(_velocity * Time.deltaTime);
+    }
+    
+    private void CheckGround()
+    {
+        Vector3 rayStart = transform.position + Vector3.up * 0.1f; 
+        _isGrounded = Physics.Raycast(rayStart, Vector3.down, 0.01f);
+    }
+
+    public bool HasMovementInput()
+    {
+        return _inputHandler.GetMovementInput().sqrMagnitude > 0.01f;
+    }
+    
+    public bool IsJumpPressed()
+    {
+        return _inputHandler.IsJumpPressed();
+    }
+    
+    public bool IsGrounded()
+    {
+        Vector3 rayStart = transform.position + Vector3.up * 0.1f;
+        return Physics.Raycast(rayStart, Vector3.down, 1.2f);
     }
 }
